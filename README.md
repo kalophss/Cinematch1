@@ -13,7 +13,7 @@ Spring Boot, JPA and working with external APIs.
 - Search movies and see details (cast, rating, overview) from TMDB
 - Watchlist,favourites,user accounts 
 - Movie quiz with AI-generated questions (Gemini)
-- Actor match:Using a picture of you ,HuggingFace api tries to match it with a celebrity actor
+- Actor match using a picture of you (HugginFace)
 
 ## Built with
 
