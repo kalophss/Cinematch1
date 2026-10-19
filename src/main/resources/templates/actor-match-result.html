@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CineMatch • Actor Match Result</title>
+    <style>
+        body {
+            margin: 0;
+            background: #0f172a;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #e5e7eb;
+        }
+
+        /* LIGHT MODE */
+        body.dark-mode {
+            background: #ffffff;
+            color: #111827;
+        }
+
+        body.dark-mode .header {
+            background: rgba(255,255,255,0.7);
+            border-bottom-color: rgba(0,0,0,0.25);
+        }
+
+        /* HEADER / NAVBAR */
+        .header {
+            backdrop-filter: blur(14px);
+            background: rgba(15, 23, 42, 0.75);
+            padding: 24px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(148,163,184,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            -webkit-background-clip: text;
+            color: transparent;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .nav-btns {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            font-size: 15px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            color: white;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        /* ✅ COMBINED USER BUTTON (PROFILE + LOGOUT) */
+        .user-combo {
+            display: flex;
+            border-radius: 999px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+        }
+
+        .user-combo button {
+            border: none;
+            padding: 10px 20px;
+            font-size: 15px;
+            cursor: pointer;
+            color: white;
+            background: transparent;
+            font-weight: 600;
+            transition: background 0.2s ease, transform 0.15s ease;
+        }
+
+        .user-left {
+            border-right: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .user-combo button:hover {
+            background: rgba(0,0,0,0.25);
+            transform: translateY(-1px);
+        }
+
+        .user-right:hover {
+            background: rgba(0,0,0,0.35);
+        }
+
+        /* PAGE */
+        .container {
+            max-width: 1000px;
+            margin: 60px auto;
+            background: rgba(30,41,59,0.95);
+            border-radius: 22px;
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+
+        body.dark-mode .container {
+            background: rgba(249,250,251,0.95);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .result-title {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .match-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: #f97316;
+            margin-bottom: 22px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 18px;
+            padding: 18px;
+            border: 1px solid rgba(148,163,184,0.18);
+        }
+
+        body.dark-mode .card {
+            background: #f3f4f6;
+            border-color: rgba(17,24,39,0.12);
+        }
+
+        .card h3 {
+            margin: 0 0 12px;
+        }
+
+        .img {
+            width: 100%;
+            max-height: 420px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 2px solid rgba(236,72,153,0.75);
+            background: rgba(0,0,0,0.12);
+        }
+
+        body.dark-mode .img {
+            border-color: rgba(236,72,153,0.55);
+        }
+
+        .muted {
+            opacity: .8;
+            margin-top: 8px;
+        }
+
+        .actions {
+            margin-top: 26px;
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 14px 28px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            background: linear-gradient(135deg,#f97316,#ec4899);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ✅ NAVBAR (ΙΔΙΟ ακριβώς) -->
+<div class="header">
+    <div class="logo" onclick="window.location.href='/home'">CineMatch</div>
+
+    <div class="nav-btns">
+        <button class="nav-btn" onclick="window.location.href='/trending'">Trending</button>
+        <button class="nav-btn" onclick="window.location.href='/trending-celebrities'">Trending Actors</button>
+        <button class="nav-btn" onclick="window.location.href='/upload'">Upload</button>
+        <button class="nav-btn" onclick="window.location.href='/actor-match'">Actor Match</button>
+        <button class="nav-btn" onclick="window.location.href='/sentiment'">Sentiment Search</button>
+        <button class="nav-btn" onclick="window.location.href='/quiz-selection'">Quiz 🎭</button>
+        <button class="nav-btn" onclick="toggleDarkMode()">𖤓</button>
+        <button class="nav-btn" onclick="location.href='/history'">History</button>
+
+        <th:block th:if="${loggedUser == null and user == null}">
+            <button class="nav-btn" onclick="window.location.href='/login'">LogIn / SignUp</button>
+        </th:block>
+
+        <th:block th:if="${loggedUser != null}">
+            <div class="user-combo">
+                <button class="user-left" onclick="window.location.href='/profile'">
+                    <span th:text="${loggedUser.fullName}">User</span>
+                </button>
+                <button class="user-right" onclick="window.location.href='/logout'">Logout</button>
+            </div>
+        </th:block>
+
+        <th:block th:if="${loggedUser == null and user != null}">
+            <div class="user-combo">
+                <button class="user-left" onclick="window.location.href='/profile'">
+                    <span th:text="${user.fullName}">User</span>
+                </button>
+                <button class="user-right" onclick="window.location.href='/logout'">Logout</button>
+            </div>
+        </th:block>
+    </div>
+</div>
+
+<div class="container">
+    <h1 class="result-title">🎭 Actor Match Result</h1>
+
+    <div class="match-name" th:if="${matchedActorName != null}">
+        <span th:text="${matchedActorName}">Matched Actor</span>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Your photo</h3>
+            <img class="img" th:if="${userPhoto != null}" th:src="${userPhoto}" alt="Your photo">
+            <div class="muted" th:if="${userPhoto == null}">No photo preview.</div>
+        </div>
+
+        <div class="card">
+            <h3>Matched actor</h3>
+            <div class="muted" th:if="${matchedActorName == null}">No match returned.</div>
+
+            <img class="img" th:if="${actorImage != null}" th:src="${actorImage}" alt="Actor photo">
+            <div class="muted" th:if="${actorImage == null}">
+                No TMDB image found (but the name match still worked).
+            </div>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="action-btn" onclick="window.location.href='/actor-match'">Try Again</button>
+        <button class="action-btn" onclick="window.location.href='/home'">Home</button>
+    </div>
+</div>
+
+<script>
+    function toggleDarkMode() {
+        const body = document.body;
+        const isDark = body.classList.toggle("dark-mode");
+        localStorage.setItem("darkMode", isDark);
+    }
+
+    window.onload = () => {
+        if (localStorage.getItem("darkMode") === "true") {
+            document.body.classList.add("dark-mode");
+        }
+    };
+</script>
+
+</body>
+</html>
